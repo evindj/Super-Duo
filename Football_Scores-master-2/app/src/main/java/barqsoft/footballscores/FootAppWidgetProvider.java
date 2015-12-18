@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
@@ -22,14 +23,14 @@ public class FootAppWidgetProvider extends AppWidgetProvider {
         for(int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.foot_appwidget);
 
-            Intent intent = new Intent(context,MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent,0);
-            views.setOnClickPendingIntent(R.id.scores_list, pendingIntent);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-               setRemoteAdapter(context,views);
+            Intent intent = new Intent(context,FootAppWidgetRemoteViewsService.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+               setRemoteAdapter(context,views,intent);
             }
             else {
-                setRemoteAdapterV11(context, views);
+                setRemoteAdapterV11(context, views,intent);
             }
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
@@ -39,17 +40,18 @@ public class FootAppWidgetProvider extends AppWidgetProvider {
     @Override
     public  void onReceive(@NonNull Context context, @NonNull Intent intent){
         super.onReceive(context, intent);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+       /* AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, getClass()));
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.scores_list);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.scores_list_widget);*/
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public void setRemoteAdapter(Context context, @NonNull final RemoteViews views){
-        views.setRemoteAdapter(R.id.scores_list, new Intent(context, FootAppWidgetProvider.class));
+    public void setRemoteAdapter(Context context, @NonNull final RemoteViews views, Intent intent){
+        views.setRemoteAdapter(R.id.scores_list_widget, intent);
     }
     @SuppressWarnings("deprecation")
-    public void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views){
-        views.setRemoteAdapter(0,R.id.scores_list, new Intent(context, FootAppWidgetProvider.class));
+    public void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views, Intent
+                                    intent){
+        views.setRemoteAdapter(0,R.id.scores_list_widget, intent);
     }
 }

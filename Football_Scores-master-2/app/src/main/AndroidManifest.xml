@@ -6,6 +6,13 @@
         android:name="android.permission.INTERNET"
         android:maxSdkVersion="22" />
 
+    <uses-permission
+        android:name="android.permission.READ_USER_DICTIONARY"
+        />
+    <uses-permission
+        android:name="android.permission.WRITE_USER_DICTIONARY"
+        />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -38,9 +45,11 @@
         <service android:name=".FootAppWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             />
+        <service android:name=".service.myFetchService"
+            />
         <receiver android:name="FootAppWidgetProvider">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/foot_appwidget_info">

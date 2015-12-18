@@ -195,6 +195,8 @@ public class myFetchService extends IntentService
                 if(     League.equals(PREMIER_LEAGUE)      ||
                         League.equals(SERIE_A)             ||
                         League.equals(BUNDESLIGA1)         ||
+                        League.equals(LIGUE1)              ||
+                        League.equals(LIGUE2)              ||
                         League.equals(BUNDESLIGA2)         ||
                         League.equals(PRIMERA_DIVISION)     )
                 {
