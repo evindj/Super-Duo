@@ -135,7 +135,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void onClick(View view) {
 
-                FragmentIntentIntegrator integrator = new FragmentIntentIntegrator(MainActivity.BookFragment);
+                FragmentIntentIntegrator integrator = new FragmentIntentIntegrator(AddBook.this);
                 integrator.initiateScan();
 
             }
