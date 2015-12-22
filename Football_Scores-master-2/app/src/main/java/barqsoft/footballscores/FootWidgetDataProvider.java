@@ -10,6 +10,9 @@ import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by evindj on 12/18/15.
  */
@@ -26,15 +29,19 @@ public class FootWidgetDataProvider implements RemoteViewsService.RemoteViewsFac
         public static final int COL_MATCHTIME = 2;
         public double detail_match_id = 0;
         private String FOOTBALL_SCORES_HASHTAG = "#Football_Scores";
-        private Cursor data = null;
+        private Cursor data;
         Context mContext;
         public FootWidgetDataProvider(Context context, Intent intent){
             mContext = context;
         }
         @Override
         public void onCreate() {
+            String arg[] = new String[1];
             Uri uri = DatabaseContract.scores_table.buildScoreWithDate();
-            data = mContext.getContentResolver().query(uri, null, null, null, null);
+            Date date = new Date(System.currentTimeMillis()+(0*86400000));
+            SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
+            arg[0] = mformat.format(date);
+            data = mContext.getContentResolver().query(uri, null, null, arg, null);
             int i = data.getCount();
         }
 
@@ -44,8 +51,12 @@ public class FootWidgetDataProvider implements RemoteViewsService.RemoteViewsFac
                 data.close();
             }
             final long identityToken = Binder.clearCallingIdentity();
+            String arg[] = new String[1];
             Uri uri = DatabaseContract.scores_table.buildScoreWithDate();
-            data = mContext.getContentResolver().query(uri,null,null,null,null);
+            Date date = new Date(System.currentTimeMillis()+(0*86400000));
+            SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
+            arg[0] = mformat.format(date);
+            data = mContext.getContentResolver().query(uri, null, null, arg, null);
             Binder.restoreCallingIdentity(identityToken);
         }
 
@@ -72,9 +83,9 @@ public class FootWidgetDataProvider implements RemoteViewsService.RemoteViewsFac
             String match_day = Utilies.getMatchDay(data.getInt(COL_MATCHDAY), data.getInt(COL_LEAGUE));
             views.setTextViewText(R.id.matchday_textview,match_day);
             String league = Utilies.getLeague(data.getInt(COL_LEAGUE));
-            views.setTextViewText(R.id.league_textview,league);
-            views.setTextViewText(R.id.home_name,data.getColumnName(COL_HOME));
-            views.setTextViewText(R.id.away_name, data.getColumnName(COL_AWAY));
+            views.setTextViewText(R.id.league_textview, league);
+            views.setTextViewText(R.id.home_name,data.getString(COL_HOME));
+            views.setTextViewText(R.id.away_name, data.getString(COL_AWAY));
             views.setTextViewText(R.id.data_textview, data.getString(COL_MATCHTIME));
             views.setTextViewText(R.id.score_textview, Utilies.getScores(data.getInt(COL_HOME_GOALS), data.getInt(COL_AWAY_GOALS)));
             views.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(data.getString(COL_HOME)));
@@ -89,7 +100,7 @@ public class FootWidgetDataProvider implements RemoteViewsService.RemoteViewsFac
         @Override
         public RemoteViews getLoadingView() {
 
-            return null; // new RemoteViews(getPackageName(), R.layout.foot_appwidget);
+         return new RemoteViews(mContext.getPackageName(), R.layout.foot_appwidget);
         }
 
         @Override

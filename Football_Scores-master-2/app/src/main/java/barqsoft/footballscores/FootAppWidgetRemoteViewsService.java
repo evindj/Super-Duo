@@ -18,6 +18,7 @@ import barqsoft.footballscores.service.myFetchService;
 public class FootAppWidgetRemoteViewsService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
+
         return  new FootWidgetDataProvider(getApplicationContext(),intent);
     }
 }
